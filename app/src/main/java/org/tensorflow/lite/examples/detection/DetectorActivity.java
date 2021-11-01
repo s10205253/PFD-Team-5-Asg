@@ -16,6 +16,7 @@
 
 package org.tensorflow.lite.examples.detection;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -27,12 +28,17 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
+import android.os.Vibrator;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import org.tensorflow.lite.examples.detection.customview.OverlayView;
 import org.tensorflow.lite.examples.detection.customview.OverlayView.DrawCallback;
 import org.tensorflow.lite.examples.detection.env.BorderedText;
@@ -56,7 +62,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private static final String TF_OD_API_LABELS_FILE = "labelmap.txt";
   private static final DetectorMode MODE = DetectorMode.TF_OD_API;
   // Minimum detection confidence to track a detection.
-  private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
+  private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.6f;
   private static final boolean MAINTAIN_ASPECT = false;
   private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
   private static final boolean SAVE_PREVIEW_BITMAP = false;
@@ -81,6 +87,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private MultiBoxTracker tracker;
 
   private BorderedText borderedText;
+
+  TextToSpeech text_to_speech;
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
@@ -204,7 +212,13 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 canvas.drawRect(location, paint);
 
                 cropToFrameTransform.mapRect(location);
-
+                Class<? extends Detector.Recognition> test = result.getClass();
+                speak("hello");
+                if (test.getName() == "laptop")
+                {
+                  Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                  v.vibrate(50);
+                }
                 result.setLocation(location);
                 mappedRecognitions.add(result);
               }
@@ -263,5 +277,23 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   @Override
   protected void setNumThreads(final int numThreads) {
     runInBackground(() -> detector.setNumThreads(numThreads));
+  }
+  public void speak(final String text){
+
+    text_to_speech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+      @Override
+      public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS){
+          int result = text_to_speech.setLanguage(Locale.ENGLISH);
+          if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
+            Log.e("TTS", "Language not supported");
+          } else {
+            text_to_speech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+          }
+        } else {
+          Log.e("TTS", "Failed");
+        }
+      }
+    });
   }
 }

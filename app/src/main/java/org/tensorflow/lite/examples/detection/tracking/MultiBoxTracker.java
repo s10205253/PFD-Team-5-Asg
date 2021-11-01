@@ -24,6 +24,7 @@ import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -67,6 +68,7 @@ public class MultiBoxTracker {
   private int frameWidth;
   private int frameHeight;
   private int sensorOrientation;
+  TextToSpeech text_to_speech;
 
   public MultiBoxTracker(final Context context) {
     for (final int color : COLORS) {
@@ -149,6 +151,7 @@ public class MultiBoxTracker {
               : String.format("%.2f", (100 * recognition.detectionConfidence));
       //            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.top,
       // labelString);
+
       borderedText.drawText(
           canvas, trackedPos.left + cornerSize, trackedPos.top, labelString + "%", boxPaint);
     }
