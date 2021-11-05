@@ -212,13 +212,15 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 canvas.drawRect(location, paint);
 
                 cropToFrameTransform.mapRect(location);
-                Class<? extends Detector.Recognition> test = result.getClass();
-                speak("hello");
-                if (test.getName() == "laptop")
+                //String test = result.getClass();
+                //speak("hello");
+                String label1 = tracker.read();
+                /*if (test.getName() == "laptop")
                 {
                   Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                   v.vibrate(50);
-                }
+                }*/
+
                 result.setLocation(location);
                 mappedRecognitions.add(result);
               }

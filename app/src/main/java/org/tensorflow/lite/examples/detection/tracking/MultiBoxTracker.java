@@ -152,6 +152,7 @@ public class MultiBoxTracker {
       //            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.top,
       // labelString);
 
+
       borderedText.drawText(
           canvas, trackedPos.left + cornerSize, trackedPos.top, labelString + "%", boxPaint);
     }
@@ -203,6 +204,14 @@ public class MultiBoxTracker {
         break;
       }
     }
+  }
+  public String read() {
+    for (final TrackedRecognition recognition : trackedObjects)
+    {
+      String Label = recognition.title;
+      return Label;
+    }
+    return "wtf man";
   }
 
   private static class TrackedRecognition {
