@@ -52,6 +52,17 @@ import org.tensorflow.lite.examples.detection.tracking.MultiBoxTracker;
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
  * objects.
  */
+
+class ThreadPause {
+  public void wait(int sec){
+    try{
+      Thread.currentThread().sleep(sec*1);
+    } catch (InterruptedException e){
+      e.printStackTrace();
+    }
+  }
+}
+
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
   private static final Logger LOGGER = new Logger();
 
@@ -212,9 +223,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 canvas.drawRect(location, paint);
 
                 cropToFrameTransform.mapRect(location);
+                String label = tracker.read();
+                ThreadPause TP = new ThreadPause();
+                TP.wait(500);
+                speak(label);
+                //speak(test);
                 //String test = result.getClass();
-                //speak("hello");
-                String label1 = tracker.read();
+                //speak("hello")
+
                 /*if (test.getName() == "laptop")
                 {
                   Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);

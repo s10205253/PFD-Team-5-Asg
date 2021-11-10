@@ -205,9 +205,22 @@ public class MultiBoxTracker {
       }
     }
   }
+
+  class ThreadPause {
+    public void wait(int sec){
+      try{
+        Thread.currentThread().sleep(sec*1);
+      } catch (InterruptedException e){
+        e.printStackTrace();
+      }
+    }
+  }
+
   public String read() {
+    ThreadPause TP = new ThreadPause();
     for (final TrackedRecognition recognition : trackedObjects)
     {
+      TP.wait(1000);
       String Label = recognition.title;
       return Label;
     }
