@@ -223,10 +223,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 canvas.drawRect(location, paint);
 
                 cropToFrameTransform.mapRect(location);
-                String label = tracker.read();
-                ThreadPause TP = new ThreadPause();
-                TP.wait(500);
-                speak(label);
                 //speak(test);
                 //String test = result.getClass();
                 //speak("hello")
@@ -246,6 +242,16 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             trackingOverlay.postInvalidate();
 
             computingDetection = false;
+            ArrayList<String> label = tracker.read();
+            for (int i = 0; i < label.size(); i++)
+            {
+              speak(label.get(i));
+              ThreadPause TP = new ThreadPause();
+              TP.wait(1000);
+            }
+            /*ThreadPause TP = new ThreadPause();
+            TP.wait(1000);*/
+
 
             runOnUiThread(
                 new Runnable() {

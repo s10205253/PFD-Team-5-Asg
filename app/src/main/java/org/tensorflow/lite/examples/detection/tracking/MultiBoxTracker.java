@@ -28,6 +28,8 @@ import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.util.TypedValue;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -216,15 +218,14 @@ public class MultiBoxTracker {
     }
   }
 
-  public String read() {
-    ThreadPause TP = new ThreadPause();
+  public ArrayList<String> read() {
+    ArrayList<String> labelList = new ArrayList<>();
     for (final TrackedRecognition recognition : trackedObjects)
     {
-      TP.wait(1000);
-      String Label = recognition.title;
-      return Label;
+      String label = recognition.title;
+      labelList.add(label);
     }
-    return "wtf man";
+    return labelList;
   }
 
   private static class TrackedRecognition {

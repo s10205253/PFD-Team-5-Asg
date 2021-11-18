@@ -6,8 +6,8 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="21"
-8-->C:\Users\65908\Documents\PFD Project\lib_task_api\src\main\AndroidManifest.xml
+8-->C:\Users\zhiho\OneDrive\Desktop\school 2.2\PFD\Assignment\lib_task_api\src\main\AndroidManifest.xml
 9        android:targetSdkVersion="30" />
-9-->C:\Users\65908\Documents\PFD Project\lib_task_api\src\main\AndroidManifest.xml
+9-->C:\Users\zhiho\OneDrive\Desktop\school 2.2\PFD\Assignment\lib_task_api\src\main\AndroidManifest.xml
 10
 11</manifest>
