@@ -30,6 +30,7 @@ import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
@@ -100,6 +101,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private BorderedText borderedText;
 
   TextToSpeech text_to_speech;
+
+
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
@@ -223,16 +226,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 canvas.drawRect(location, paint);
 
                 cropToFrameTransform.mapRect(location);
-                //speak(test);
-                //String test = result.getClass();
-                //speak("hello")
-
-                /*if (test.getName() == "laptop")
-                {
-                  Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                  v.vibrate(50);
-                }*/
-
                 result.setLocation(location);
                 mappedRecognitions.add(result);
               }
@@ -245,12 +238,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             ArrayList<String> label = tracker.read();
             for (int i = 0; i < label.size(); i++)
             {
-              speak(label.get(i));
+              //GetLocationList(mappedRecognitions).get(i)
+              speak(label.get(i) + GetLocationList(mappedRecognitions).get(i));
               ThreadPause TP = new ThreadPause();
               TP.wait(1000);
             }
-            /*ThreadPause TP = new ThreadPause();
-            TP.wait(1000);*/
 
 
             runOnUiThread(
@@ -264,7 +256,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 });
           }
         });
+
   }
+
+
+
 
   @Override
   protected int getLayoutId() {
@@ -320,4 +316,31 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       }
     });
   }
+  public ArrayList<String> GetLocationList(List<Detector.Recognition> mappedRecognitions)
+  {
+
+    //480
+    int height = getDesiredPreviewFrameSize().getHeight();
+    //640
+    int width = getDesiredPreviewFrameSize().getWidth();
+    ArrayList<String> positionList = new ArrayList<>();
+    ArrayList<RectF> locationList = new ArrayList<>();
+
+    for (Detector.Recognition recogs : mappedRecognitions)
+    {
+      locationList.add(recogs.getLocation());
+      if ((recogs.getLocation().top + recogs.getLocation().width()/2) <= height/3)
+      {
+        positionList.add("right");
+      }
+      else if ((recogs.getLocation().top + recogs.getLocation().width()/2) <= 320)
+      {
+        positionList.add("Center");
+      }
+      else
+        positionList.add("left");
+    }
+    return positionList;
+  }
+
 }
