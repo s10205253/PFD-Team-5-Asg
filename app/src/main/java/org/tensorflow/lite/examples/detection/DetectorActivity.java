@@ -34,7 +34,11 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.core.app.ComponentActivity;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +141,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
     previewWidth = size.getWidth();
     previewHeight = size.getHeight();
-
     sensorOrientation = rotation - getScreenOrientation();
     LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
 
@@ -171,6 +174,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   @Override
   protected void processImage() {
+    ArrayList<String> dangerObjects = new ArrayList<String>();
+    dangerObjects.add("knife");
+    dangerObjects.add("scissors");
+
     ++timestamp;
     final long currTimestamp = timestamp;
     trackingOverlay.postInvalidate();
@@ -238,10 +245,21 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             ArrayList<String> label = tracker.read();
             for (int i = 0; i < label.size(); i++)
             {
-              //GetLocationList(mappedRecognitions).get(i)
-              speak(label.get(i) + GetLocationList(mappedRecognitions).get(i));
-              ThreadPause TP = new ThreadPause();
-              TP.wait(1000);
+              //Check if objext is  in dangerous object list
+              if (dangerObjects.contains(label.get(i)))
+              {
+                //GetLocationList(mappedRecognitions).get(i)
+                speak("Warning" + label.get(i) + GetLocationList(mappedRecognitions).get(i));
+                ThreadPause TP = new ThreadPause();
+                TP.wait(2000);
+              }
+              else
+              {
+                //GetLocationList(mappedRecognitions).get(i)
+                speak(label.get(i) + GetLocationList(mappedRecognitions).get(i));
+                ThreadPause TP = new ThreadPause();
+                TP.wait(1000);
+              }
             }
 
 
@@ -258,9 +276,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         });
 
   }
-
-
-
 
   @Override
   protected int getLayoutId() {
@@ -324,23 +339,24 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     //640
     int width = getDesiredPreviewFrameSize().getWidth();
     ArrayList<String> positionList = new ArrayList<>();
-    ArrayList<RectF> locationList = new ArrayList<>();
 
     for (Detector.Recognition recogs : mappedRecognitions)
     {
-      locationList.add(recogs.getLocation());
-      if ((recogs.getLocation().top + recogs.getLocation().width()/2) <= height/3)
+      if (recogs.getLocation().top <= 110)
       {
         positionList.add("right");
       }
-      else if ((recogs.getLocation().top + recogs.getLocation().width()/2) <= 320)
+      else if ((recogs.getLocation().top) <= 200)
       {
         positionList.add("Center");
       }
       else
+      {
         positionList.add("left");
+      }
     }
     return positionList;
   }
+  //+ recogs.getLocation().width()/2
 
 }
